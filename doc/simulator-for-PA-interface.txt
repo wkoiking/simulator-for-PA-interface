@@ -97,17 +97,16 @@ scenario5 :: Scenario
 -- | Main module for interface simulation of ATS and PA
 module PA
 
--- | To insert delay for the thread
-wait :: Int -> IO ()
-
--- | Start simulator for ATS server with scenario
+-- | Start simulator for ATS server with scenario Currently following
+--   scenarios are available <a>scenario1</a>, <a>scenario2</a>,
+--   <a>scenario3</a>, <a>scenario4</a> and <a>scenario5</a>
 serverATS :: ServiceName -> Scenario -> IO ()
 
 -- | Start simulator for PA server
 serverPA :: HostName -> ServiceName -> IO ()
 
 -- | Get a handle for TCP/IP communicatoin for manually sending the message
---   with "sendMsgPA2ATS" or "sendMsgATS2PA"
+--   with <a>sendMsgPA2ATS</a> or <a>sendMsgATS2PA</a>
 getHandle :: HostName -> ServiceName -> IO Handle
 
 -- | To close handle
@@ -118,3 +117,6 @@ sendMsgPA2ATS :: Handle -> MessagePA2ATS -> IO ()
 
 -- | To manually send the ATS to PA message
 sendMsgATS2PA :: Handle -> MessagePA2ATS -> IO ()
+
+-- | To insert delay for the thread
+wait :: Int -> IO ()

@@ -1,12 +1,10 @@
-module PA.Data where
+ï»¿module PA.Data where
 
 import Data.Serialize
 import Data.Bits
 import Data.Word
 import Control.Monad (replicateM_, replicateM)
 import qualified Data.ByteString as BS (singleton, head)
-
--- error handling‚Ì’Ç‰Á
 
 data MessageATS2PA 
     = OperationalATSSession

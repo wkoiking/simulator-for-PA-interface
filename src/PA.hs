@@ -1,20 +1,5 @@
--- | Main module for interface simulation of ATS and PA
+ï»¿-- | Main module for interface simulation of ATS and PA
 module PA where
-
--- ToDo
--- —áŠO‚Ì‹““®‚ð’m‚é‚½‚ß‚É“K“–‚ÉƒeƒXƒg‚µ‚Ä‚Ý‚é
--- Hex‚ÅƒpƒPƒbƒg‚Ì•\Ž¦‚ð‚µ‚Ä‚ ‚°‚é•û–@‚à—pˆÓ‚µ‚Ä‚ ‚°‚é -> decode, showHex‚ðŽg‚¤
-
--- NotInService       -> Ž~‚Ü‚é‚¯‚ÇŽŸ‚Ìtrip‚ªNon-revenue
--- Terminated         -> ¡‚Ìmission‚ª‚»‚±‚ÅI‚í‚éiŒü‚«‚ð•Ï‚¦‚éj‚©‚ÂŽŸ‚Ìtrip‚ªRevenue
--- Non-Stopping       -> Ž~‚Ü‚ç‚È‚¢
--- NextEstimatedTrain -> ŽŸ‚Ìtrip‚ªRevenue‚©‚ÂŒü‚«‚ð•Ï‚¦‚È‚¢
-
--- SP6Žd—l‘‚ð‘‚«Š·‚¦‚½‚¢
---   ‚È‚º‚È‚çAŒ»Ý‚ÌŽd—l‚¾‚ÆNonStopping‚âNonRevenue‚Ì—ñŽÔ‚ª—ˆ‚éê‡‚ÍŽŸ‚ÌRevenue‚ÌŽž‚ª•\Ž¦‚³‚ê‚È‚¢Žd—l‚¾‚©‚ç
---   –{“–‚ÍArrival Triger‚ÆTimeToArrival‚É‚·‚é‚Ì‚ª—Ç‚¢
---   Train stopping schedule‚Ìíœ‚µ‚½‚¢
---   Dwell Time‚Ìíœ‚µ‚½‚¢
 
 import PA.Data
 import PA.Scenario
@@ -40,6 +25,7 @@ import Network.Socket
 import Network.BSD
 
 -- | Start simulator for ATS server with scenario
+-- Currently following scenarios are available 'scenario1', 'scenario2', 'scenario3', 'scenario4' and 'scenario5'
 serverATS
     :: ServiceName -- ^ Port number
     -> Scenario -- ^ Scenario
@@ -86,10 +72,10 @@ serverPA hostname port = bracket (getHandle hostname port) hClose (\h -> do
     sourceHandle h $$ conduitGet2 (get :: Get MessageATS2PA) =$ printC
     serverPA hostname port)
 
--- | Get a handle for TCP/IP communicatoin for manually sending the message with "sendMsgPA2ATS" or "sendMsgATS2PA"
+-- | Get a handle for TCP/IP communicatoin for manually sending the message with 'sendMsgPA2ATS' or 'sendMsgATS2PA'
 getHandle
-    :: HostName -- ^IP Address of the target server to communicate
-    -> ServiceName -- ^Port number of the target server to communicate
+    :: HostName -- ^ IP Address of the target server to communicate
+    -> ServiceName -- ^ Port number of the target server to communicate
     -> IO Handle
 getHandle hostname port = withSocketsDo $ do
     addrinfos <- getAddrInfo Nothing (Just hostname) (Just port)
@@ -107,8 +93,8 @@ closeHandle = hClose
 
 -- | To manually send the PA to ATS message
 sendMsgPA2ATS
-    :: Handle -- ^Handle of the TCP/IP communication
-    -> MessagePA2ATS -- ^Message to be sent
+    :: Handle -- ^ Handle of the TCP/IP communication
+    -> MessagePA2ATS -- ^ Message to be sent
     -> IO ()
 sendMsgPA2ATS h msg = withSocketsDo $ do
     B.hPutStr h (encode $ msg)
@@ -116,8 +102,8 @@ sendMsgPA2ATS h msg = withSocketsDo $ do
 
 -- | To manually send the ATS to PA message
 sendMsgATS2PA
-    :: Handle -- ^Handle of the TCP/IP communication
-    -> MessagePA2ATS -- ^Message to be sent
+    :: Handle -- ^ Handle of the TCP/IP communication
+    -> MessagePA2ATS -- ^ Message to be sent
     -> IO ()
 sendMsgATS2PA h msg = withSocketsDo $ do
     B.hPutStr h (encode $ msg)
