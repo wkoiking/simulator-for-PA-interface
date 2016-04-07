@@ -107,7 +107,7 @@ sendMsgPA2ATS h msg = withSocketsDo $ do
 -- | To manually send the ATS to PA message.
 sendMsgATS2PA
     :: Handle -- ^ Handle of the TCP/IP communication
-    -> MessagePA2ATS -- ^ Message to be sent
+    -> MessageATS2PA -- ^ Message to be sent
     -> IO ()
 sendMsgATS2PA h msg = withSocketsDo $ do
     B.hPutStr h (encode $ msg)
