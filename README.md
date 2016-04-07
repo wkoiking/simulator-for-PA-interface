@@ -21,10 +21,10 @@
 
 # How to Use
 
-1. Open ghci at in this repository:
+1. Open ghci at this repository:
 
     ```
-    > cd path-to-the-repository
+    > cd path-to-this-repository
     > stack ghci
     ```
 
@@ -37,7 +37,7 @@
 3. Start other terminal and run the simulator for PA server in the similar manner:
 
     ```
-    > cd path-to-the-repository
+    > cd path-to-this-repository
     > stack ghci
     GHCi> serverPA "localhost" "3000"
     ```
@@ -45,10 +45,10 @@
 Also you can manually send the Message by such as:
 
 ```
-GHCi> h <- getHandle "localhost" "3000"  // Address and port number of PA server
-GHCi> sendMsgATS2PA OperationalATSSession
-GHCi> sendMsgATS2PA (TrainInfo SixCar PL2 15 00 00 BTGD)
-GHCi> sendMsgATS2PA (ClearDisplay BTGD PL2)
+GHCi> h <- getHandle "localhost" "3000"        // Get a handle by specifying address and port number of PA server
+GHCi> sendMsgATS2PA h OperationalATSSession    // Send Operational ATS Session Message
+GHCi> sendMsgATS2PA h (DeparturePlatform IWNR (TrainInfo SixCar PL2 15 00 00 BTGD)) // Send Departure Platform Message
+GHCi> sendMsgATS2PA h (ClearDisplay BTGD PL2)  // Send ClearDisplay Message
 ```
 
 Refer to `./doc/index.html` for the detail of the API.

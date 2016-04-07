@@ -25,8 +25,8 @@ import Data.Conduit.Cereal
 import Network.Socket
 import Network.BSD
 
--- | Start simulator for ATS server with scenario
--- Currently following scenarios are available 'scenario1', 'scenario2', 'scenario3', 'scenario4' and 'scenario5'
+-- | Start simulator for ATS server with scenario.
+-- Currently following scenarios are available 'scenario1', 'scenario2', 'scenario3', 'scenario4' and 'scenario5'.
 serverATS
     :: ServiceName -- ^ Port number
     -> Scenario -- ^ Scenario
@@ -66,7 +66,7 @@ serverATS port scenario = withSocketsDo $
                    (\h -> source h $$ conduit1 h $= conduit2 h $= sink h)
            loop mastersock
 
--- | Start simulator for PA server
+-- | Start simulator for PA server.
 serverPA
     :: HostName -- ^ IP Address of ATS server to connect
     -> ServiceName -- ^ Port number of ATS server to connect
@@ -76,7 +76,7 @@ serverPA hostname port = bracket (getHandle hostname port) hClose (\h -> do
     sourceHandle h $$ conduitGet2 (get :: Get MessageATS2PA) =$ printC
     serverPA hostname port)
 
--- | Get a handle for TCP/IP communicatoin for manually sending the message with 'sendMsgPA2ATS' or 'sendMsgATS2PA'
+-- | Get a handle for TCP/IP communicatoin for manually sending the message with 'sendMsgPA2ATS' or 'sendMsgATS2PA'.
 getHandle
     :: HostName -- ^ IP Address of the target server to communicate
     -> ServiceName -- ^ Port number of the target server to communicate
@@ -91,7 +91,7 @@ getHandle hostname port = withSocketsDo $ do
     hSetBuffering h LineBuffering
     return h
 
--- | To close handle
+-- | To close handle.
 closeHandle :: Handle -> IO ()
 closeHandle = hClose
 
@@ -104,7 +104,7 @@ sendMsgPA2ATS h msg = withSocketsDo $ do
     B.hPutStr h (encode $ msg)
     hFlush h
 
--- | To manually send the ATS to PA message
+-- | To manually send the ATS to PA message.
 sendMsgATS2PA
     :: Handle -- ^ Handle of the TCP/IP communication
     -> MessagePA2ATS -- ^ Message to be sent
@@ -113,7 +113,7 @@ sendMsgATS2PA h msg = withSocketsDo $ do
     B.hPutStr h (encode $ msg)
     hFlush h
 
--- | To insert delay for the thread
+-- | To insert delay for the thread.
 wait
     :: Int -- ^ seconds
     -> IO ()
