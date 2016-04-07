@@ -1,4 +1,4 @@
-module Main where
+module PA where
 
 -- ToDo
 -- 例外の挙動を知るために適当にテストしてみる

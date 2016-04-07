@@ -3,7 +3,7 @@
 
 name:                simulator-for-PA-interface
 version:             0.1.0.0
-synopsis:            Delhi Line 8 ATS external interface
+synopsis:            For testing interface with PA
 -- description:         
 license:             BSD3
 license-file:        LICENSE
@@ -15,13 +15,9 @@ build-type:          Simple
 -- extra-source-files:  
 cabal-version:       >=1.10
 
-executable simulator-for-PA-interface-exe
-  hs-source-dirs:      app
-  main-is:             Main.hs
-  -- other-modules:       
-  other-extensions:    TemplateHaskell
-  build-depends:       base, bytestring,
-                       conduit-combinators, aeson, aeson-pretty,
-                       attoparsec, network, cereal, cereal-conduit, conduit, transformers
+library
   hs-source-dirs:      src
+  exposed-modules:     PA
+                       PA.Data
+  build-depends:       base, bytestring, conduit-combinators, network, cereal, cereal-conduit, conduit, transformers
   default-language:    Haskell2010
