@@ -51,4 +51,4 @@ GHCi> sendMsgATS2PA h (DeparturePlatform IWNR (TrainInfo SixCar PL2 15 00 00 BTG
 GHCi> sendMsgATS2PA h (ClearDisplay BTGD PL2)  // Send ClearDisplay Message
 ```
 
-Refer to `./doc/index.html` for the detail of the API.
+Refer to `~/doc/index.html` for the detail of the API.
