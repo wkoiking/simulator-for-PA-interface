@@ -19,5 +19,6 @@ library
   hs-source-dirs:      src
   exposed-modules:     PA
                        PA.Data
+                       PA.Scenario
   build-depends:       base, bytestring, conduit-combinators, network, cereal, cereal-conduit, conduit, transformers
   default-language:    Haskell2010
