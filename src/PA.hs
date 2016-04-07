@@ -1,4 +1,5 @@
-﻿-- | Main module for interface simulation of ATS and PA
+-- | Main module for interface simulation of ATS and PA
+
 module PA where
 
 import PA.Data

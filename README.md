@@ -21,9 +21,10 @@
 
 # How to Use
 
-1. Open ghci:
+1. Open ghci at in this repository:
 
     ```
+    > cd path-to-the-repository
     > stack ghci
     ```
 

@@ -1,4 +1,4 @@
-﻿module PA.Scenario where
+module PA.Scenario where
 
 import PA.Data
 

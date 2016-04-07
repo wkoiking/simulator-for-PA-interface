@@ -1,4 +1,4 @@
-﻿module PA.Data where
+module PA.Data where
 
 import Data.Serialize
 import Data.Bits
