@@ -12,7 +12,7 @@
     > git clone https://github.com/wkoiking/simulator-for-PA-interface.git
     ```
 
-4. Install with stack:
+4. Install the simulator with stack:
 
     ```
     > cd simulator-for-interface
@@ -36,16 +36,18 @@
 3. Start other terminal and run the simulator for PA server in the similar manner:
 
     ```
+    > cd path-to-the-repository
+    > stack ghci
     GHCi> serverPA "localhost" "3000"
     ```
 
 Also you can manually send the Message by such as:
 
-    ```
-    GHCi> h <- getHandle "localhost" "3000"  // Address and port number of PA server
-    GHCi> sendMsgATS2PA OperationalATSSession
-    GHCi> sendMsgATS2PA (TrainInfo SixCar PL2 15 00 00 BTGD)
-    GHCi> sendMsgATS2PA (ClearDisplay BTGD PL2)
-    ```
+```
+GHCi> h <- getHandle "localhost" "3000"  // Address and port number of PA server
+GHCi> sendMsgATS2PA OperationalATSSession
+GHCi> sendMsgATS2PA (TrainInfo SixCar PL2 15 00 00 BTGD)
+GHCi> sendMsgATS2PA (ClearDisplay BTGD PL2)
+```
 
 Refer to `./doc/index.html` for the detail of the API.
