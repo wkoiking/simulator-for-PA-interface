@@ -66,7 +66,10 @@ serverATS port scenario = withSocketsDo $
            loop mastersock
 
 -- | Start simulator for PA server
-serverPA :: HostName -> ServiceName -> IO ()
+serverPA
+    :: HostName -- ^ IP Address of ATS server to connect
+    -> ServiceName -- ^ Port number of ATS server to connect
+    -> IO ()
 serverPA hostname port = bracket (getHandle hostname port) hClose (\h -> do
     sendMsgPA2ATS h ConnectionRequest
     sourceHandle h $$ conduitGet2 (get :: Get MessageATS2PA) =$ printC
