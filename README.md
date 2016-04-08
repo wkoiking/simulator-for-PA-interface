@@ -16,6 +16,7 @@
 
     ```
     > cd simulator-for-interface
+    > stack setup
     > stack build
     ```
 
@@ -52,3 +53,21 @@ GHCi> sendMsgATS2PA h (ClearDisplay BTGD PL2)  // Send ClearDisplay Message
 ```
 
 Refer to `~/doc/index.html` for the detail of the API.
+
+# ToDo
+
+* 例外の挙動を知るために適当にテストしてみる
+* Hexでパケットの表示をしてあげる方法も用意してあげる -> decode, showHexを使う
+
+* SP6仕様書を書き換えたい
+    * なぜなら、現在の仕様だとNonStoppingやNonRevenueの列車が来る場合は次のRevenueの時刻が表示されない仕様だから
+    * 本当はArrival TrigerとTimeToArrivalにするのが良い
+    * Train stopping scheduleの削除したい
+    * Dwell Timeの削除したい
+
+# Memo
+
+* NotInService       -> 止まるけど次のtripがNon-revenue
+* Terminated         -> 今のmissionがそこで終わる（向きを変える）かつ次のtripがRevenue
+* Non-Stopping       -> 止まらない
+* NextEstimatedTrain -> 次のtripがRevenueかつ向きを変えない
