@@ -50,6 +50,7 @@ serverATS port scenario = withSocketsDo $
            let source h = sourceHandle h $= conduitGet2 get
                conduit1 h = do
                    mmsg <- await
+                   liftIO $ putStrLn "in mainloop"
                    case mmsg of
                        Nothing -> liftIO $ putStrLn "Nothing left, exiting"
                        Just ConnectionRequest -> do
@@ -62,6 +63,7 @@ serverATS port scenario = withSocketsDo $
                        Just (msg, delay) -> do
                            yield msg
                            liftIO $ wait delay
+                           conduit2 h
                sink h = conduitPut put =$ sinkHandle h
            bracket (socketToHandle connsock ReadWriteMode)
                    (\h -> do
@@ -89,7 +91,7 @@ getHandle hostname port = withSocketsDo $ do
     addrinfos <- getAddrInfo Nothing (Just hostname) (Just port)
     let serveraddr = head addrinfos
     sock <- socket (addrFamily serveraddr) Stream defaultProtocol
-    setSocketOption sock KeepAlive 1
+--     setSocketOption sock KeepAlive 1
     connect sock (addrAddress serveraddr)
     h <- socketToHandle sock ReadWriteMode
     hSetBuffering h LineBuffering
