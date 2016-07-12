@@ -36,7 +36,6 @@
     ```
 
 3. Start other terminal and run the simulator for PA server in the similar manner:
-
     ```
     > cd path-to-this-repository
     > stack ghci

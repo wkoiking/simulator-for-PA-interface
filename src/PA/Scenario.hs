@@ -1,50 +1,84 @@
 module PA.Scenario where
 
 import PA.Data
+import Data.Word (Word8)
 
 type Scenario = [(MessageATS2PA, Int)]
 
-scenario1 :: Scenario
+scenario1
+    :: StationCode -- ^ Station to be displayed
+    -> StationCode -- ^ Destination station for row 1
+    -> StationCode -- ^ Destination station for row 2
+    -> StationCode -- ^ Destination station for row 3
+    -> PlatformNumber -- ^ Platform Number
+    -> RollingStockProfile -- ^ Type of train
+    -> Word8 -- ^ Hour of first train departure
+    -> Scenario
 -- ^ This scenario is for Departure Platform Message.
-scenario1 = replicate 5 (nextThreeDepartures, 30)
+scenario1 stCode dst1 dst2 dst3 pl profile hh = replicate 5 (nextThreeDepartures, 30)
  where nextThreeDepartures = NextThreeDeparture
-           NUEE
-           [TrainInfo SixCar PL2 10 55 00 BTGD
-           ,TrainInfo SixCar PL2 11 05 35 BTGD
-           ,TrainInfo SixCar PL2 11 20 55 BTGD
+           stCode
+           [TrainInfo profile pl hh 00 00 dst1
+           ,TrainInfo profile pl hh 10 35 dst2
+           ,TrainInfo profile pl hh 25 55 dst3
            ]
 
-scenario2 :: Scenario
+scenario2
+    :: StationCode -- ^ Station to be displayed
+    -> StationCode -- ^ Destination station for train 1
+    -> StationCode -- ^ Destination station for train 2
+    -> PlatformNumber -- ^ Platform Number
+    -> RollingStockProfile -- ^ Type of train
+    -> Word8 -- ^ Hour of train departure
+    -> Scenario
 -- ^ This scenario is for revenue train at KJMD.
-scenario2 = concat [beforeArrival, atDwell, afterArrival] 
- where beforeArrival = replicate 4 $ (ArrivalPlatform KJMD (NextEstimatedTrain trainAarr 30), 30)
-       atDwell = [(DeparturePlatform KJMD trainAdep, 30)]
-       afterArrival = replicate 4 $ (ArrivalPlatform KJMD (NextEstimatedTrain trainBarr 30), 30)
-       trainAarr = TrainInfo SixCar PL2 15 00 00 BTGD
-       trainAdep = TrainInfo SixCar PL2 15 00 30 BTGD
-       trainBarr = TrainInfo SixCar PL2 15 15 00 BTGD
+scenario2 stCode dst1 dst2 pl profile hh = concat [beforeArrival, atDwell, afterArrival] 
+ where beforeArrival = replicate 4 $ (ArrivalPlatform stCode (NextEstimatedTrain trainAarr 30), 30)
+       atDwell = [(DeparturePlatform stCode  trainAdep, 30)]
+       afterArrival = replicate 4 $ (ArrivalPlatform stCode  (NextEstimatedTrain trainBarr 30), 30)
+       trainAarr = TrainInfo profile pl hh 10 00 dst1
+       trainAdep = TrainInfo profile pl hh 10 30 dst1
+       trainBarr = TrainInfo profile pl hh 25 00 dst2
 
-scenario3 :: Scenario
+scenario3
+    :: StationCode -- ^ Station to be displayed
+    -> StationCode -- ^ Destination station
+    -> PlatformNumber -- ^ Platform Number
+    -> RollingStockProfile -- ^ Type of train
+    -> Word8 -- ^ Hour of train departure
+    -> Scenario
 -- ^ This scenario is for non-stopping train at KJMD.
-scenario3 = concat [beforeArrival, afterArrival] 
- where beforeArrival = replicate 4 $ (ArrivalPlatform KJMD NonStopping, 30)
-       afterArrival = replicate 4 $ (ArrivalPlatform KJMD (NextEstimatedTrain trainBarr 30), 30)
-       trainAarr = TrainInfo SixCar PL2 15 00 00 BTGD
-       trainBarr = TrainInfo SixCar PL2 15 15 00 BTGD
+scenario3 stCode dst pl profile hh = concat [beforeArrival, afterArrival] 
+ where beforeArrival = replicate 4 $ (ArrivalPlatform stCode  NonStopping, 30)
+       afterArrival = replicate 4 $ (ArrivalPlatform stCode  (NextEstimatedTrain trainBarr 30), 30)
+       trainBarr = TrainInfo profile pl hh 55 00 dst
 
-scenario4 :: Scenario
+scenario4
+    :: StationCode
+    -> StationCode -- ^ Destination station for train 1
+    -> StationCode -- ^ Destination station for train 2
+    -> PlatformNumber -- ^ Platform Number
+    -> RollingStockProfile -- ^ Type of train
+    -> Word8 -- ^ Hour of train departure
+    -> Scenario
 -- ^ This scenario is for non-revenue train at KJMD.
-scenario4 = concat [beforeArrival, [clearCue], afterArrival] 
- where beforeArrival = replicate 4 $ (ArrivalPlatform KJMD NotInService, 30)
-       clearCue = (ClearDisplay BTGD PL2, 40)
-       afterArrival = replicate 4 $ (ArrivalPlatform KJMD (NextEstimatedTrain trainBarr 30), 30)
-       trainAarr = TrainInfo SixCar PL2 15 00 00 BTGD
-       trainBarr = TrainInfo SixCar PL2 15 15 00 BTGD
+scenario4 stCode dst1 dst2 pl profile hh = concat [beforeArrival, [clearCue], afterArrival] 
+ where beforeArrival = replicate 4 $ (ArrivalPlatform stCode NotInService, 30)
+       clearCue = (ClearDisplay stCode pl, 40)
+       afterArrival = replicate 4 $ (ArrivalPlatform stCode (NextEstimatedTrain trainBarr 30), 30)
+       trainAarr = TrainInfo profile pl hh 24 00 dst1
+       trainBarr = TrainInfo profile pl hh 39 00 dst2
 
-scenario5 :: Scenario
+scenario5
+    :: StationCode -- ^ Station to be displayed
+    -> StationCode -- ^ Destination station
+    -> PlatformNumber -- ^ Platform Number
+    -> RollingStockProfile -- ^ Type of train
+    -> Word8 -- ^ Hour of train departure
+    -> Scenario
 -- ^ This scenario is for terminated train at BTGD.
-scenario5 = concat [beforeArrival, atDwell, afterArrival] 
- where beforeArrival = replicate 3 $ (ArrivalPlatform BTGD Terminated, 30)
-       atDwell = [(DeparturePlatform BTGD trainAdep, 30)]
-       afterArrival = replicate 3 $ (ArrivalPlatform BTGD Terminated, 30)
-       trainAdep = TrainInfo SixCar PL2 15 00 30 JPW
+scenario5 stCode dst pl profile hh = concat [beforeArrival, atDwell, afterArrival] 
+ where beforeArrival = replicate 3 $ (ArrivalPlatform stCode Terminated, 30)
+       atDwell = [(DeparturePlatform stCode trainAdep, 30)]
+       afterArrival = replicate 3 $ (ArrivalPlatform stCode Terminated, 30)
+       trainAdep = TrainInfo profile pl hh 43 30 dst

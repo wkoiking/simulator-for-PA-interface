@@ -1,8 +1,19 @@
 module PA.Data where
 
 import Data.Serialize
-import Data.Bits
+
+-- bytes
+-- import qualified Data.Bytes.Serial as S
+-- import qualified Data.Bytes.Get as G
+-- import qualified Data.Bytes.Put as P
+
+-- bits
+import qualified Data.Bits.Coded as B
+import qualified Data.Bits.Coding as B
+
+-- base
 import Data.Word
+import Data.Bits
 import Control.Monad (replicateM_, replicateM)
 import qualified Data.ByteString as BS (singleton, head)
 
@@ -104,7 +115,9 @@ instance Serialize MessageATS2PA where
         putWord8 2 -- SrcID
         putWord8 5 -- MessageID
         put stNum
-        put plNum
+        B.runEncode $ do
+            B.putBitsFrom 3 (zeroBits :: Word8)
+            B.encode plNum :: B.Coding PutM ()
     get = do
         2 <- getWord8
         msgID <- getWord8
@@ -131,7 +144,9 @@ instance Serialize MessageATS2PA where
                 return $ ArrivalPlatform stCode arr
             5  -> do
                 stCode <- get
-                plNum <- get
+                plNum <- B.runDecode $ do
+                    B.getBitsFrom 3 (zeroBits :: Word8)
+                    B.decode :: B.Coding Get PlatformNumber
                 return $ ClearDisplay stCode plNum
             _  -> fail "oh my god!"
 
@@ -179,48 +194,47 @@ instance Serialize ArrivalTrigger where
 
 instance Serialize TrainInfo where
     put (TrainInfo profile pl hh mm ss dst) = do
-        putWord8 $ shiftL (BS.head $ encode profile) 4 .|. BS.head (encode pl)
+        B.runEncode $ do
+            B.encode profile :: B.Coding PutM ()
+            B.encode pl :: B.Coding PutM ()
         putWord8 hh
         putWord8 mm
         putWord8 ss
         put dst
     get = do
-        w <- getWord8
-        let Right rsp = decode $ BS.singleton (shiftR w 4)
-            Right pln = decode $ BS.singleton (shiftR (shiftL w 4) 4)
+        (profile, pl) <- B.runDecode $ do
+            profile <- B.decode :: B.Coding Get RollingStockProfile
+            pl <- B.decode :: B.Coding Get PlatformNumber
+            return (profile, pl)
         hh <- getWord8
         mm <- getWord8
         ss <- getWord8
         sc <- get
-        return $ TrainInfo rsp pln hh mm ss sc
+        return $ TrainInfo profile pl hh mm ss sc
 
-instance Serialize RollingStockProfile where
-    put = putWord8 . enc
-     where enc :: RollingStockProfile -> Word8
-           enc FourCar  = 1
-           enc SixCar   = 2
-           enc EightCar = 3
-    get = do
-        w <- getWord8
-        return $ dec w
-     where dec :: Word8 -> RollingStockProfile
-           dec 1 = FourCar
-           dec 2 = SixCar
-           dec 3 = EightCar
+instance B.Coded PlatformNumber where
+    encode PL1 = B.putBitsFrom 3 (1 :: Word8)
+    encode PL2 = B.putBitsFrom 3 (2 :: Word8)
+    encode PL3 = B.putBitsFrom 3 (3 :: Word8)
+    decode = do
+        w <- B.getBitsFrom 3 (zeroBits :: Word8)
+        case w of
+           1 -> return PL1
+           2 -> return PL2
+           3 -> return PL3
+           _ -> fail "oh my god!"
 
-instance Serialize PlatformNumber where
-    put = putWord8 . enc
-     where enc :: PlatformNumber -> Word8
-           enc PL1 = 1
-           enc PL2 = 2
-           enc PL3 = 3
-    get = do
-        w <- getWord8
-        return $ dec w
-     where dec :: Word8 -> PlatformNumber
-           dec 1 = PL1
-           dec 2 = PL2
-           dec 3 = PL3
+instance B.Coded RollingStockProfile where
+    encode FourCar = B.putBitsFrom 3 (1 :: Word8)
+    encode SixCar = B.putBitsFrom 3 (2 :: Word8)
+    encode EightCar = B.putBitsFrom 3 (2 :: Word8)
+    decode = do
+        w <- B.getBitsFrom 3 (zeroBits :: Word8)
+        case w of
+           1 -> return FourCar
+           2 -> return SixCar
+           3 -> return EightCar
+           _ -> fail "oh my god!"
 
 instance Serialize StationCode where
     put = putWord8 . enc
