@@ -6,7 +6,7 @@
 --   
 --   For testing interface with PA
 @package simulator-for-PA-interface
-@version 0.1.0.0
+@version 0.1.0.2
 
 module PA.Data
 data MessageATS2PA
@@ -71,52 +71,52 @@ instance Data.Serialize.Serialize PA.Data.MessageATS2PA
 instance Data.Serialize.Serialize PA.Data.MessagePA2ATS
 instance Data.Serialize.Serialize PA.Data.ArrivalTrigger
 instance Data.Serialize.Serialize PA.Data.TrainInfo
-instance Data.Serialize.Serialize PA.Data.RollingStockProfile
-instance Data.Serialize.Serialize PA.Data.PlatformNumber
+instance Data.Bits.Coded.Coded PA.Data.PlatformNumber
+instance Data.Bits.Coded.Coded PA.Data.RollingStockProfile
 instance Data.Serialize.Serialize PA.Data.StationCode
 
 module PA.Scenario
 type Scenario = [(MessageATS2PA, Int)]
 
--- | This scenario is for Departure Platform Message
-scenario1 :: Scenario
+-- | This scenario is for Departure Platform Message.
+scenario1 :: StationCode -> StationCode -> StationCode -> StationCode -> PlatformNumber -> RollingStockProfile -> Word8 -> Scenario
 
--- | This scenario is for revenue train at KJMD
-scenario2 :: Scenario
+-- | This scenario is for revenue train at KJMD.
+scenario2 :: StationCode -> StationCode -> StationCode -> PlatformNumber -> RollingStockProfile -> Word8 -> Scenario
 
--- | This scenario is for non-stopping train at KJMD
-scenario3 :: Scenario
+-- | This scenario is for non-stopping train at KJMD.
+scenario3 :: StationCode -> StationCode -> PlatformNumber -> RollingStockProfile -> Word8 -> Scenario
 
--- | This scenario is for non-revenue train at KJMD
-scenario4 :: Scenario
+-- | This scenario is for non-revenue train at KJMD.
+scenario4 :: StationCode -> StationCode -> StationCode -> PlatformNumber -> RollingStockProfile -> Word8 -> Scenario
 
--- | This scenario is for terminated train at BTGD
-scenario5 :: Scenario
+-- | This scenario is for terminated train at BTGD.
+scenario5 :: StationCode -> StationCode -> PlatformNumber -> RollingStockProfile -> Word8 -> Scenario
 
 
 -- | Main module for interface simulation of ATS and PA
 module PA
 
--- | Start simulator for ATS server with scenario Currently following
+-- | Start simulator for ATS server with scenario. Currently following
 --   scenarios are available <a>scenario1</a>, <a>scenario2</a>,
---   <a>scenario3</a>, <a>scenario4</a> and <a>scenario5</a>
+--   <a>scenario3</a>, <a>scenario4</a> and <a>scenario5</a>.
 serverATS :: ServiceName -> Scenario -> IO ()
 
--- | Start simulator for PA server
+-- | Start simulator for PA server.
 serverPA :: HostName -> ServiceName -> IO ()
 
 -- | Get a handle for TCP/IP communicatoin for manually sending the message
---   with <a>sendMsgPA2ATS</a> or <a>sendMsgATS2PA</a>
+--   with <a>sendMsgPA2ATS</a> or <a>sendMsgATS2PA</a>.
 getHandle :: HostName -> ServiceName -> IO Handle
 
--- | To close handle
+-- | To close handle.
 closeHandle :: Handle -> IO ()
 
 -- | To manually send the PA to ATS message
 sendMsgPA2ATS :: Handle -> MessagePA2ATS -> IO ()
 
--- | To manually send the ATS to PA message
-sendMsgATS2PA :: Handle -> MessagePA2ATS -> IO ()
+-- | To manually send the ATS to PA message.
+sendMsgATS2PA :: Handle -> MessageATS2PA -> IO ()
 
--- | To insert delay for the thread
+-- | To insert delay for the thread.
 wait :: Int -> IO ()

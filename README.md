@@ -32,7 +32,7 @@
 2. Run simulator for ATS server:
 
     ```
-    GHCi> serverATS "3000" scenario1
+    GHCi> serverATS "3000" (scenario1 IWNR JPW JPW BTGD PL1 SixCar 10)
     ```
 
 3. Start other terminal and run the simulator for PA server in the similar manner:
@@ -41,6 +41,10 @@
     > stack ghci
     GHCi> serverPA "localhost" "3000"
     ```
+
+You can set parameter for each scenario.
+
+Refer to `~/doc/PA-Scenario.html` for the available parameters for each scenario.
 
 Also you can manually send the Message by such as:
 

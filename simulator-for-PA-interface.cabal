@@ -2,7 +2,7 @@
 -- documentation, see http://haskell.org/cabal/users-guide/
 
 name:                simulator-for-PA-interface
-version:             0.1.0.0
+version:             0.1.0.2
 synopsis:            For testing interface with PA
 -- description:         
 license:             BSD3
