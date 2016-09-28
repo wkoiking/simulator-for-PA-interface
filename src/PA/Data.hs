@@ -92,34 +92,34 @@ data StationCode
 
 instance Serialize MessageATS2PA where
     put OperationalATSSession = do
-        putWord8 2 -- SrcID
+        putWord8 1 -- SrcID
         putWord8 1 -- MessageID
     put (NextThreeDeparture stNum trInfos) = do
-        putWord8 2 -- SrcID
+        putWord8 1 -- SrcID
         putWord8 2 -- MessageID
         put stNum
         putWord8 (fromIntegral (length trInfos) :: Word8)
         mapM_ (\x -> put x >> replicateM_ 5 (putWord8 0xFF)) trInfos
     put (DeparturePlatform stNum trInfo) = do
-        putWord8 2 -- SrcID
+        putWord8 1 -- SrcID
         putWord8 3 -- MessageID
         put stNum
         put trInfo
         replicateM_ 5 (putWord8 0xFF)
     put (ArrivalPlatform stNum arrTriger) = do
-        putWord8 2 -- SrcID
+        putWord8 1 -- SrcID
         putWord8 4 -- MessageID
         put stNum
         put arrTriger
     put (ClearDisplay stNum plNum) = do
-        putWord8 2 -- SrcID
+        putWord8 1 -- SrcID
         putWord8 5 -- MessageID
         put stNum
         B.runEncode $ do
             B.putBitsFrom 3 (zeroBits :: Word8)
             B.encode plNum :: B.Coding PutM ()
     get = do
-        2 <- getWord8
+        1 <- getWord8
         msgID <- getWord8
         case msgID of
             1  -> return OperationalATSSession
